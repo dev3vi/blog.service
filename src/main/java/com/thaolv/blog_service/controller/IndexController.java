@@ -3,6 +3,7 @@ package com.thaolv.blog_service.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTPClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,6 +24,11 @@ public class IndexController {
         Objects.requireNonNull(ftpClient).deleteFile("test.txt");
         ftpClient.disconnect();
         return "123";
+    }
+
+    @PostMapping("/authenticate")
+    private String authenticate() {
+        return "todo";
     }
 
     public static FTPClient connect(String server, int port, String account, String password) {
