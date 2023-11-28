@@ -16,6 +16,11 @@ import java.util.Objects;
 public class IndexController {
 
 
+    @GetMapping("/ping")
+    private String ping() {
+        return "ping success!";
+    }
+
     @GetMapping
     private String index() throws IOException {
         FTPClient ftpClient = this.connect("127.0.0.1", 21, "admin", "admin");

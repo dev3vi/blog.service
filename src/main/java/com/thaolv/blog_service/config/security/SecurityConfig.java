@@ -1,9 +1,10 @@
-package com.thaolv.blog_service.config;
+package com.thaolv.blog_service.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -21,13 +22,18 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final JwtTokenAuthenticationFilter jwtTokenAuthenticationFilter;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    @Autowired
-    public BCryptPasswordEncoder bcryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
     @Override
@@ -37,13 +43,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests()
                 .antMatchers("/api/authenticate").permitAll()
                 .antMatchers("/**").permitAll()
-                .antMatchers(
-                        "/", "/favicon.ico",
-                        "/**/*.png", "/**/*.gif", "/**/*.svg", "/**/*.jpg",
-                        "/**/*.html", "/**/*.css", "/**/*.js"
-                ).permitAll()
                 .anyRequest().authenticated()
                 .and().csrf().disable()
+                .addFilterBefore(jwtTokenAuthenticationFilter , UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
@@ -53,6 +55,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         corsConfiguration.addAllowedHeader(CorsConfiguration.ALL);
         corsConfiguration.addExposedHeader("Authorization");
         corsConfiguration.addAllowedOrigin("http://127.0.0.1:8080");
+        corsConfiguration.addAllowedOrigin("http://127.0.0.1:5500");
+        corsConfiguration.addAllowedOrigin("https://thaolv.io.vn/");
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setExposedHeaders(List.of("Content-Disposition"));
 
