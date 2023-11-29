@@ -36,16 +36,12 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
             String token = authorizationHeader.replace(Constants.BEARER_TOKEN_PREFIX, "").trim();
             String username = null;
 
-            if (token != null) {
-                try {
-                    username = tokenProvider.getAllClaimsFromTokens(token).getSubject();
-                } catch (IllegalArgumentException e) {
-                    System.out.println("Unable to get JWT Token");
-                } catch (ExpiredJwtException e) {
-                    System.out.println("JWT Token has expired");
-                }
-            } else {
-                logger.warn("JWT Token null");
+            try {
+                username = tokenProvider.getAllClaimsFromTokens(token).getSubject();
+            } catch (IllegalArgumentException e) {
+                System.out.println("Unable to get JWT Token");
+            } catch (ExpiredJwtException e) {
+                System.out.println("JWT Token has expired");
             }
 
             // Once we get the token validate it.
