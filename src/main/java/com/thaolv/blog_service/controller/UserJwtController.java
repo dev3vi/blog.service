@@ -4,6 +4,7 @@ package com.thaolv.blog_service.controller;
 import com.thaolv.blog_service.config.security.JwtTokenProvider;
 import com.thaolv.blog_service.dto.request.UserDTO;
 import com.thaolv.blog_service.dto.response.LoginRes;
+import com.thaolv.blog_service.repository.UsersRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.rmi.ServerException;
+import java.util.Collection;
 import java.util.stream.Collectors;
 
 @RestController
@@ -26,6 +28,9 @@ public class UserJwtController {
 
     @Autowired
     private JwtTokenProvider tokenProvider;
+
+    @Autowired
+    private UsersRepository usersRepository;
 
     @PostMapping("/authenticate")
     private LoginRes authenticateUser(@RequestBody UserDTO userDTO) throws Exception {
@@ -53,5 +58,11 @@ public class UserJwtController {
     public String currentUserNameSimple() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();
+    }
+
+    @GetMapping("/get-role")
+    public Collection<GrantedAuthority> getRole() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return ((UsernamePasswordAuthenticationToken) authentication).getAuthorities();
     }
 }
