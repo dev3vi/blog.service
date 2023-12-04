@@ -1,5 +1,8 @@
 package com.thaolv.blog_service.dto;
 
+import lombok.Data;
+
+@Data
 public class BaseResponse<T> {
     private String code;
     private String message;
