@@ -1,6 +1,5 @@
 # Dockerfile
-FROM openjdk:11-jdk-alpine
+FROM eclipse-temurin:11.0.13_8-jre-alpine
+WORKDIR /app
 COPY target/blog_service-0.0.1-SNAPSHOT.jar blog_service.jar
 ENTRYPOINT ["java","-jar","/blog_service.jar"]
-WORKDIR /app
-EXPOSE 8081
