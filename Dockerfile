@@ -1,6 +1,6 @@
 # Dockerfile
 FROM openjdk:11-jdk-alpine
-COPY target/spring-boot-app.jar spring-boot-app.jar
-ENTRYPOINT ["java","-jar","/spring-boot-app.jar"]
+COPY target/blog_service-0.0.1-SNAPSHOT.jar blog_service.jar
+ENTRYPOINT ["java","-jar","/blog_service.jar"]
 WORKDIR /app
 EXPOSE 8081
