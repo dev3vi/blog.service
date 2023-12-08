@@ -1,20 +1,21 @@
 package com.thaolv.blog_service.controller;
 
 
+import com.thaolv.blog_service.common.Constants;
 import com.thaolv.blog_service.config.security.JwtTokenProvider;
+import com.thaolv.blog_service.dto.BaseResponse;
 import com.thaolv.blog_service.dto.request.UserDTO;
 import com.thaolv.blog_service.dto.response.LoginRes;
-import com.thaolv.blog_service.repository.UsersRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.rmi.ServerException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -29,29 +30,33 @@ public class UserJwtController {
     @Autowired
     private JwtTokenProvider tokenProvider;
 
-    @Autowired
-    private UsersRepository usersRepository;
-
     @PostMapping("/authenticate")
-    private LoginRes authenticateUser(@RequestBody UserDTO userDTO) throws Exception {
-        LoginRes response = new LoginRes();
-        //Xác thực từ username và password.
+    private BaseResponse<?> authenticateUser(@RequestBody UserDTO userDTO) {
+        BaseResponse<LoginRes> baseResponse = new BaseResponse<>();
+        LoginRes response =  new LoginRes();
         try {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                     userDTO.getUsername(),userDTO.getPassword());
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
-            // Nếu không xảy ra exception tức là thông tin hợp lệ
-            // Set thông tin authentication vào Security Context
+            // If invalid username, password -> throw Exception here
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            // Else if valid username, password
             String jwt = tokenProvider.generateToken(userDTO.getUsername());
             response.setUsername(authentication.getName());
             response.setRole(authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
             response.setToken(jwt);
+        } catch (BadCredentialsException e) {
+            log.error("Authentication fail", e);
+            baseResponse.setStatus(Constants.ERROR_AUTHENTICATION);
+            return baseResponse;
         } catch (Exception exception) {
-            log.error("authentication fail", exception);
-            throw new ServerException("ErrorCode.AUTHEN_ERROR");
+            log.error("Server error", exception);
+            baseResponse.setStatus(Constants.ERROR_CODE);
+            return baseResponse;
         }
-        return response;
+        baseResponse.setData(response);
+        baseResponse.setStatus(Constants.SUCCESS_CODE);
+        return baseResponse;
     }
 
     @GetMapping("/get-user-info")
