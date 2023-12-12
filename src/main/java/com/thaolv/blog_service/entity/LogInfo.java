@@ -4,9 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -16,6 +14,7 @@ import java.time.LocalDateTime;
 @Table(name = "log_info")
 public class LogInfo {
     @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
     private String time;
     private String ip;
