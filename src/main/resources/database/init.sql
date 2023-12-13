@@ -35,3 +35,4 @@ CREATE TABLE `thaolv-blog`.log_info
 ) ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_0900_ai_ci;
+ALTER TABLE `thaolv-blog`.log_info ADD lat_long varchar(100) NULL;

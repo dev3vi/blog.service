@@ -18,4 +18,5 @@ public class LogInfo {
     private String time;
     private String ip;
     private String infoDevice;
+    private String latLong;
 }
