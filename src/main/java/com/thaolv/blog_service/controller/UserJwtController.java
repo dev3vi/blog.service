@@ -1,12 +1,17 @@
 package com.thaolv.blog_service.controller;
 
 
+import com.google.gson.Gson;
 import com.thaolv.blog_service.common.Constants;
 import com.thaolv.blog_service.config.security.JwtTokenProvider;
 import com.thaolv.blog_service.dto.BaseResponse;
 import com.thaolv.blog_service.dto.request.UserDTO;
 import com.thaolv.blog_service.dto.response.LoginRes;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -29,9 +34,12 @@ public class UserJwtController {
 
     @Autowired
     private JwtTokenProvider tokenProvider;
-
+    protected final Gson gson = new Gson();
+    private static final Logger authenticateUserLogger = LoggerFactory.getLogger("authenticateUser");
     @PostMapping("/authenticate")
     private BaseResponse<?> authenticateUser(@RequestBody UserDTO userDTO) {
+        log.info(gson.toJson(userDTO));
+        authenticateUserLogger.info(gson.toJson(userDTO));
         BaseResponse<LoginRes> baseResponse = new BaseResponse<>();
         LoginRes response =  new LoginRes();
         try {
