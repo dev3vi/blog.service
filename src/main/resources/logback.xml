@@ -23,7 +23,7 @@
 	<root level="INFO">
 		<appender-ref ref="CONSOLE" />
 	</root>
-	<logger name="authenticateUser" level="INFO">
+	<logger name="com.example.myapp.special" level="INFO">
 		<appender-ref ref="INFO_CONSOLE" />
 	</logger>
 </configuration>
