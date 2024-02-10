@@ -29,7 +29,7 @@ public class TestController {
 
     @PostMapping("/ping")
     public String ping() {
-        return "success!";
+        return "happy new year!";
     }
 
     @GetMapping
