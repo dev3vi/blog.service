@@ -12,7 +12,7 @@ public class IndexController {
 
     @GetMapping("/ping")
     private String ping() {
-        return "ping success!";
+        return "happy new year!!!";
     }
 
 }
